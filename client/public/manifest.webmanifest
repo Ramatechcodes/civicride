@@ -1,0 +1,17 @@
+{
+  "name": "CivicRide",
+  "short_name": "CivicRide",
+  "description": "Safer, smarter local rides",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06152d",
+  "theme_color": "#06152d",
+  "icons": [
+    {
+      "src": "/civicride-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

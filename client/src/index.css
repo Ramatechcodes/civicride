@@ -1,0 +1,3 @@
+
+.admin-document-shortcut{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.admin-document-shortcut h3{margin:0 0 6px;font:700 19px Manrope,sans-serif}.admin-document-shortcut p{margin:0}.admin-document-shortcut button{white-space:nowrap}
+@media(max-width:520px){.admin-document-shortcut{align-items:stretch;flex-direction:column}.admin-document-shortcut button{width:100%}}

@@ -65,8 +65,49 @@ router.patch('/location', allowRoles('driver'), async (req, res, next) => {
     if (!activeRide) return res.status(403).json({ message: 'Location sharing is enabled only during an active trip' });
     const accuracy = Number(req.body.accuracy);
     await User.findByIdAndUpdate(req.user._id, { $set: { currentLocation: { lat, lng, accuracy: Number.isFinite(accuracy) && accuracy >= 0 ? Math.min(accuracy, 10000) : undefined, updatedAt: new Date() } } });
-    const ride = await Ride.findOne({ driver: req.user._id, status: { $in: ['accepted', 'arriving', 'in_progress'] } }).select('_id passenger');
-    if (ride) getIO()?.to(`ride:${ride._id}`).emit('ride:location', { rideId: String(ride._id), driverId: String(req.user._id), lat, lng, at: new Date().toISOString() });
+    const ride = await Ride.findOne({ driver: req.user._id, status: { $in: ['accepted', 'arriving', 'in_progress'] } })
+      .select('_id passenger status pickup destination distanceKm progressMilestoneNotified');
+    if (ride) {
+      getIO()?.to(`ride:${ride._id}`).emit('ride:location', { rideId: String(ride._id), driverId: String(req.user._id), lat, lng, at: new Date().toISOString() });
+      // Send only milestone push updates so a subscribed passenger can see progress
+      // while the browser/app is in the background without receiving a notification
+      // on every GPS ping.
+      if (ride.status === 'in_progress' && ride.passenger) {
+        const rad = n => n * Math.PI / 180;
+        const p = ride.destination || {};
+        if (Number.isFinite(Number(p.lat)) && Number.isFinite(Number(p.lng))) {
+          const dLat = rad(Number(p.lat) - lat), dLng = rad(Number(p.lng) - lng);
+          const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(lat)) * Math.cos(rad(Number(p.lat))) * Math.sin(dLng / 2) ** 2;
+          const remainingKm = 6371 * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(Math.max(0, 1 - h)));
+          const totalKm = Number(ride.distanceKm);
+          if (Number.isFinite(totalKm) && totalKm > 0) {
+            const progress = Math.max(0, Math.min(99, Math.round(((totalKm - remainingKm) / totalKm) * 100)));
+            const milestone = progress >= 90 ? 90 : progress >= 75 ? 75 : progress >= 50 ? 50 : progress >= 25 ? 25 : 0;
+            if (milestone > Number(ride.progressMilestoneNotified || 0)) {
+              const claimed = await Ride.findOneAndUpdate(
+                { _id: ride._id, $or: [{ progressMilestoneNotified: { $lt: milestone } }, { progressMilestoneNotified: { $exists: false } }] },
+                { $set: { progressMilestoneNotified: milestone } },
+                { new: true }
+              ).select('_id passenger');
+              if (claimed) {
+                const { sendPushToUser } = await import('../services/push.js');
+                const visualBar = `${'█'.repeat(Math.round(milestone / 10))}${'░'.repeat(10 - Math.round(milestone / 10))}`;
+                const body = remainingKm < 0.1
+                  ? `Trip progress ${visualBar} ${milestone}% · Your driver is very close to your destination.`
+                  : `Trip progress ${visualBar} ${milestone}% · About ${remainingKm.toFixed(1)} km remaining (straight-line GPS estimate).`;
+                await sendPushToUser(ride.passenger, {
+                  title: 'CivicRide live trip progress',
+                  body,
+                  url: '/',
+                  tag: `civicride-trip-progress-${ride._id}`,
+                  renotify: false
+                }).catch(() => {});
+              }
+            }
+          }
+        }
+      }
+    }
     getIO()?.to('admins').emit('driver:location',{driverId:String(req.user._id),lat,lng,updatedAt:new Date().toISOString()});
     res.json({ message: 'Location updated' });
   } catch (e) { next(e); }

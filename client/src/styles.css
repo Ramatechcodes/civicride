@@ -87,3 +87,10 @@ html[data-theme="light"] body{background:#f3f7fb;color:#132238}html[data-theme="
 .push-setup-actions button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .push-setup-message{overflow-wrap:anywhere;border-top:1px solid var(--border,#d9e1ec);padding-top:8px;margin-bottom:0!important}
 @media(max-width:520px){.push-setup-card{right:10px;bottom:82px;width:calc(100vw - 20px)}}
+
+.trip-progress-meta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:7px;font-size:12px;flex-wrap:wrap}
+.trip-progress-meta b{font-weight:750}
+.trip-progress-meta span{opacity:.85;text-align:right}
+.trip-progress-track[role="progressbar"]{overflow:hidden}
+.trip-progress-track span{transition:width .8s ease}
+@media(max-width:520px){.trip-progress-meta{align-items:flex-start;flex-direction:column;gap:3px}.trip-progress-meta span{text-align:left}}

@@ -10,6 +10,7 @@ const schema = new mongoose.Schema({
   estimatedFare: { type: Number, required: true, min: 0 },
   distanceKm: { type: Number, min: 0 },
   durationMin: { type: Number, min: 0 },
+  progressMilestoneNotified: { type: Number, default: 0, min: 0, max: 100 },
   passengerLocation: { lat: Number, lng: Number, accuracy: Number, updatedAt: Date },
   activity: [{ action: { type: String, maxlength: 80 }, actor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, note: { type: String, maxlength: 300 }, at: { type: Date, default: Date.now } }],
   coinsAwarded: { type: Number, default: 0, min: 0 },

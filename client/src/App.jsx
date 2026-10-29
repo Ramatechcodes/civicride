@@ -16,6 +16,7 @@ import { MAX_DOC_BYTES } from './constants.js';
 
 import { io } from 'socket.io-client';
 import RideMap from './RideMap.jsx';
+import PushNotifications from './PushNotifications.jsx';
 
 
 
@@ -631,6 +632,7 @@ async function rideAction(id, action, body = {}) {
     </nav>}
 
     {user && <ContactCenter user={user} token={token} />}
+    {user && <PushNotifications token={token} />}
 
     <footer><a className="brand footer-brand" onClick={() => setView('home')}><span className="brand-icon"><Navigation size={18}/></span><span>Civic<span className="green">Ride</span></span></a><span>Ride smarter. Live better.</span><span>Development starter · Configure before production</span></footer>
 

@@ -5,7 +5,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0',
-    port: 5172,
     allowedHosts: ['rewire-fountain-stinging.ngrok-free.dev'],
     proxy: {
       '/api': {

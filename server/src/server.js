@@ -11,6 +11,7 @@ import adminRoutes from './routes/admin.js';
 import safetyRoutes from './routes/safety.js';
 import driverRoutes from './routes/drivers.js';
 import chatRoutes from './routes/chat.js';
+import pushRoutes from './routes/push.js';
 import http from 'node:http';
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
@@ -21,7 +22,7 @@ import { setIO } from './realtime.js';
 const app = express();
 app.set('trust proxy', 1);
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5172').split(',').map(x => x.trim()).filter(Boolean);
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173').split(',').map(x => x.trim()).filter(Boolean);
 // In development also accept localhost and private-network origins so the app can be tested from a phone on the same Wi-Fi.
 const devOrigin = /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/;
 const originAllowed = origin => !origin || allowedOrigins.includes(origin) || (process.env.NODE_ENV !== 'production' && devOrigin.test(origin));
@@ -37,6 +38,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/safety', safetyRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/push', pushRoutes);
 app.use((err, _req, res, _next) => {
   console.error(err);
   if (err?.name === 'CastError') return res.status(400).json({ message: 'Invalid identifier supplied.' });

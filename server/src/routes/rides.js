@@ -124,6 +124,8 @@ router.patch('/:id/accept', allowRoles('driver'), async (req, res, next) => {
     await recordActivity({ user: req.user, action: 'ride_accepted', entityType: 'ride', entityId: ride._id, details: `Driver accepted ride ${ride._id}` });
     getIO()?.to(`ride:${ride._id}`).emit('ride:updated', { rideId: String(ride._id), status: ride.status });
     notifyAdminChanged('ride-accepted');
+    const { sendPushToUser } = await import('../services/push.js');
+    await sendPushToUser(ride.passenger, { title: 'Your driver accepted the ride', body: 'Your CivicRide driver accepted your request.', url: '/', tag: `ride-${ride._id}-accepted` }).catch(() => {});
     res.json({ ride });
   } catch (e) { next(e); }
 });
@@ -150,6 +152,10 @@ router.patch('/:id/status', async (req, res, next) => {
     await recordActivity({ user: req.user, action: `ride_${status}`, entityType: 'ride', entityId: ride._id, details: `${ride.pickup.address} to ${ride.destination.address}` });
     getIO()?.to(`ride:${ride._id}`).emit('ride:updated', { rideId: String(ride._id), status: ride.status, driver: ride.driver });
     notifyAdminChanged(`ride-${status}`);
+    const { sendPushToUser } = await import('../services/push.js');
+    const recipientId = String(ride.passenger) === String(req.user._id) ? ride.driver : ride.passenger;
+    const titles = { arriving: 'Your driver is approaching', in_progress: 'Your CivicRide trip has started', completed: 'Your CivicRide trip is complete', cancelled: 'CivicRide trip cancelled' };
+    if (recipientId && titles[status]) await sendPushToUser(recipientId, { title: titles[status], body: `${ride.pickup.address} to ${ride.destination.address}`, url: '/', tag: `ride-${ride._id}-${status}` }).catch(() => {});
     res.json({ ride, coinsAwarded: ride.coinsAwarded || 0 });
   } catch (e) { next(e); }
 });
@@ -160,7 +166,7 @@ router.post('/:id/share', allowRoles('passenger'), async (req, res, next) => {
     if (!ride) return res.status(404).json({ message: 'Active ride not found' });
     const raw = crypto.randomBytes(32).toString('hex');
     ride.shareTokenHash = crypto.createHash('sha256').update(raw).digest('hex'); ride.shareEnabled = true; await ride.save();
-    res.json({ shareUrl: `${process.env.PUBLIC_APP_URL || process.env.CLIENT_URL?.split(',')[0] || 'http://localhost:5172'}/share/${raw}`, message: 'Share link created. Anyone with this link can see limited trip status; share it only with a trusted contact.' });
+    res.json({ shareUrl: `${process.env.PUBLIC_APP_URL || process.env.CLIENT_URL?.split(',')[0] || 'http://localhost:5173'}/share/${raw}`, message: 'Share link created. Anyone with this link can see limited trip status; share it only with a trusted contact.' });
   } catch (e) { next(e); }
 });
 

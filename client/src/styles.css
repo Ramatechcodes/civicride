@@ -79,3 +79,11 @@ html[data-theme="light"] body{background:#f3f7fb;color:#132238}html[data-theme="
 /* Driver availability diagnostics and six-item bottom navigation on desktop + mobile */
 .driver-online-hint{display:grid;gap:5px;padding:12px 14px;margin:10px 0;border:1px solid #168b67;border-radius:12px;background:rgba(0,201,139,.08);font-size:13px}.driver-online-hint span{color:#9db3ca;line-height:1.5}.mobile-tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:52px;border:0;border-radius:13px;background:transparent;color:#9fb3c8;font-size:11px;font-weight:650;padding:6px 3px;cursor:pointer}.mobile-tabbar button.active{background:#103c43;color:#00e5a0}.mobile-tabbar button svg{flex-shrink:0}html[data-theme="light"] .driver-online-hint span{color:#365c55}html[data-theme="light"] .mobile-tabbar{background:rgba(255,255,255,.97);border-color:#d8e3ef}html[data-theme="light"] .mobile-tabbar button{color:#53677e}html[data-theme="light"] .mobile-tabbar button.active{background:#d9f7eb;color:#047857}
 @media(max-width:520px){.mobile-tabbar button{font-size:9px;min-height:48px}.mobile-tabbar svg{width:17px;height:17px}}
+
+/* Push-notification setup panel */
+.push-setup-card{position:fixed;z-index:1000;right:16px;bottom:92px;width:min(360px,calc(100vw - 32px));padding:14px;border:1px solid var(--border,#d9e1ec);border-radius:16px;background:var(--panel,#fff);color:var(--text,#142033);box-shadow:0 12px 36px rgba(0,0,0,.18)}
+.push-setup-card p{font-size:.86rem;line-height:1.45;margin:7px 0 10px}
+.push-setup-actions{display:flex;gap:8px;flex-wrap:wrap}
+.push-setup-actions button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.push-setup-message{overflow-wrap:anywhere;border-top:1px solid var(--border,#d9e1ec);padding-top:8px;margin-bottom:0!important}
+@media(max-width:520px){.push-setup-card{right:10px;bottom:82px;width:calc(100vw - 20px)}}

@@ -70,7 +70,7 @@ router.post('/wallet/initialize', requireAuth, async (req,res,next)=>{
     if(!req.user.email) return res.status(400).json({message:'Add an email address to your account before wallet top-up.'});
     const reference=`CRW-${req.user._id}-${crypto.randomUUID()}`;
     await WalletTransaction.create({user:req.user._id,type:'topup',amount,currency:'NGN',status:'pending',reference,meta:{purpose:'wallet_topup'}});
-    const redirectBase=(process.env.PUBLIC_APP_URL||process.env.CLIENT_URL||'http://localhost:5172').split(',')[0].trim();
+    const redirectBase=(process.env.PUBLIC_APP_URL||process.env.CLIENT_URL||'http://localhost:5173').split(',')[0].trim();
     const response=await fetch(`${base()}/payments`,{method:'POST',headers:{Authorization:`Bearer ${process.env.FLW_SECRET_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({tx_ref:reference,amount,currency:'NGN',redirect_url:`${redirectBase}/wallet-result`,customer:{email:req.user.email,name:req.user.name},meta:{kind:'wallet_topup',userId:String(req.user._id)},customizations:{title:'CivicRide Wallet',description:'Wallet balance top-up'}})});
     const data=await response.json().catch(()=>({}));
     if(!response.ok||data.status!=='success'||!data.data?.link){await WalletTransaction.updateOne({reference},{ $set:{status:'failed'} });return res.status(502).json({message:'Flutterwave could not initialize this wallet top-up.'});}
@@ -97,7 +97,7 @@ router.post('/initialize', requireAuth, async (req, res, next) => {
     if (ride.paymentMethod !== 'flutterwave') return res.status(400).json({ message: 'This ride uses cash payment' });
     if (ride.paymentStatus === 'paid') return res.status(409).json({ message: 'Ride is already paid' });
     const txRef = `CR-${ride._id}-${crypto.randomUUID()}`;
-    const redirectBase = (process.env.PUBLIC_APP_URL || process.env.CLIENT_URL || 'http://localhost:5172').split(',')[0].trim();
+    const redirectBase = (process.env.PUBLIC_APP_URL || process.env.CLIENT_URL || 'http://localhost:5173').split(',')[0].trim();
     const response = await fetch(`${base()}/payments`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${process.env.FLW_SECRET_KEY}`, 'Content-Type': 'application/json' },

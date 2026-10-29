@@ -59,7 +59,7 @@ Start Vite:
 npm run dev
 ```
 
-Open `http://localhost:5172`. Keep both terminals open. GPS and microphone/camera permissions work on localhost; deployed versions must use HTTPS.
+Open `http://localhost:5173`. Keep both terminals open. GPS and microphone/camera permissions work on localhost; deployed versions must use HTTPS.
 
 ## 4. Create an administrator
 

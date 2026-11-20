@@ -1,0 +1,779 @@
+/* CivicRide Passenger Experience — visual refresh
+   Scoped to .passenger-experience so Driver/Admin screens retain their existing UI. */
+
+.passenger-experience {
+  --cr-bg: #f5f7f4;
+  --cr-surface: #ffffff;
+  --cr-surface-soft: #f0f4ef;
+  --cr-ink: #17251f;
+  --cr-muted: #68776f;
+  --cr-line: #e1e8e2;
+  --cr-primary: #176b4b;
+  --cr-primary-strong: #10563b;
+  --cr-accent: #d9f36a;
+  --cr-shadow: 0 18px 55px rgba(26, 52, 38, .08);
+  color: var(--cr-ink);
+  background: var(--cr-bg);
+  max-width: none;
+  padding: 0 clamp(18px, 5vw, 76px) 110px;
+  min-height: 100vh;
+  font-family: Inter, "DM Sans", system-ui, sans-serif;
+}
+html:has(.app-shell.passenger-experience) body { background: var(--cr-bg); }
+.passenger-experience .topbar {
+  max-width: 1440px; margin: 0 auto; height: 82px;
+  border-bottom: 1px solid var(--cr-line);
+}
+.passenger-experience .brand { color: var(--cr-ink); font-size: 21px; letter-spacing: -.7px; }
+.passenger-experience .brand small { color: var(--cr-muted); }
+.passenger-experience .brand-icon {
+  color: white; background: var(--cr-primary); border-radius: 13px;
+  box-shadow: 0 7px 18px rgba(23,107,75,.18);
+}
+.passenger-experience .green { color: var(--cr-primary); }
+.passenger-experience .nav-link { color: #40534a; font-weight: 650; }
+.passenger-experience .nav-link:hover { color: var(--cr-primary); }
+.passenger-experience .primary {
+  color: #fff; background: var(--cr-primary); border: 1px solid var(--cr-primary);
+  border-radius: 999px; box-shadow: 0 8px 18px rgba(23,107,75,.16);
+  padding: 13px 21px;
+}
+.passenger-experience .primary:hover { background: var(--cr-primary-strong); }
+.passenger-experience .outline {
+  color: var(--cr-ink); background: #fff; border: 1px solid #d4dfd7; border-radius: 999px;
+}
+.passenger-experience .outline:hover { border-color: var(--cr-primary); color: var(--cr-primary); }
+.passenger-experience .eyebrow { color: var(--cr-primary); letter-spacing: 1.7px; }
+.passenger-experience .dot { background: var(--cr-primary); box-shadow: 0 0 0 5px rgba(23,107,75,.10); }
+.passenger-experience main { max-width: 1440px; margin: 0 auto; }
+.passenger-experience .hero-grid {
+  min-height: 610px; padding: 70px 0 62px; gap: clamp(35px, 6vw, 90px);
+}
+.passenger-experience .hero-copy h1 {
+  color: #17251f; font-size: clamp(46px, 5.5vw, 76px);
+  line-height: 1.02; letter-spacing: -3.7px; max-width: 680px;
+}
+.passenger-experience .hero-copy > p {
+  color: #64736b; font-size: 17px; line-height: 1.75; max-width: 460px;
+}
+.passenger-experience .hero-actions { gap: 13px; margin: 32px 0 26px; }
+.passenger-experience .trust-row { color: #5d7065; gap: 20px; }
+.passenger-experience .trust-row svg { color: var(--cr-primary); }
+.passenger-experience .hero-art { min-height: 450px; }
+.passenger-experience .map-grid {
+  height: 430px; border: 1px solid #d8e4db; border-radius: 30px;
+  background-color: #e8efe8;
+  background-image:
+    linear-gradient(25deg, transparent 47%, #cbd9cf 48%, #cbd9cf 50%, transparent 51%),
+    linear-gradient(115deg, transparent 47%, #cbd9cf 48%, #cbd9cf 50%, transparent 51%),
+    linear-gradient(#d6e1d8 1px, transparent 1px),
+    linear-gradient(90deg, #d6e1d8 1px, transparent 1px);
+  box-shadow: 0 28px 70px rgba(36,67,47,.12);
+}
+.passenger-experience .road { border-color: #9ebca7; }
+.passenger-experience .map-pin { background: var(--cr-primary); color: white; box-shadow: 0 0 0 8px rgba(23,107,75,.12); }
+.passenger-experience .pin-b { background: #d9f36a; color: #26331d; }
+.passenger-experience .map-label {
+  background: #fff; border: 1px solid #dbe5dd; color: var(--cr-ink);
+  box-shadow: 0 5px 16px rgba(25,50,34,.08);
+}
+.passenger-experience .map-card {
+  background: rgba(255,255,255,.96); border: 1px solid #dce6de;
+  border-radius: 18px; color: var(--cr-ink); box-shadow: 0 12px 30px rgba(25,50,34,.10);
+}
+.passenger-experience .map-card small { color: var(--cr-muted); }
+.passenger-experience .car-bubble,
+.passenger-experience .icon-box { background: #e8f2e9; color: var(--cr-primary); border-radius: 13px; }
+.passenger-experience .feature-strip { gap: 14px; margin: 18px 0 48px; }
+.passenger-experience .feature-strip div {
+  background: #fff; border: 1px solid var(--cr-line); border-radius: 18px;
+  padding: 20px; box-shadow: 0 8px 25px rgba(26,52,38,.035);
+}
+.passenger-experience .feature-strip svg { color: var(--cr-primary); }
+.passenger-experience .feature-strip span { color: var(--cr-muted); }
+.passenger-experience footer { border-color: var(--cr-line); color: #77857c; }
+.passenger-experience .panel {
+  color: var(--cr-ink); background: var(--cr-surface); border: 1px solid var(--cr-line);
+  border-radius: 22px; box-shadow: var(--cr-shadow);
+}
+.passenger-experience .dashboard { padding: 42px 0 25px; }
+.passenger-experience .dashboard-head { margin-bottom: 26px; }
+.passenger-experience .dashboard h1 { color: var(--cr-ink); letter-spacing: -1.5px; }
+.passenger-experience .dashboard-head .muted,
+.passenger-experience .muted { color: var(--cr-muted); }
+.passenger-experience .profile-chip { background: #fff; border-color: var(--cr-line); color: var(--cr-ink); }
+.passenger-experience .avatar { background: var(--cr-accent); color: #26331d; }
+.passenger-experience .section-title h2,
+.passenger-experience .panel h2,
+.passenger-experience .mini-panel h3 { color: var(--cr-ink); letter-spacing: -.5px; }
+.passenger-experience .booking-panel { padding: clamp(20px, 3vw, 32px); }
+.passenger-experience .form-stack label { color: #40534a; font-size: 13px; }
+.passenger-experience .form-stack input,
+.passenger-experience .form-stack select,
+.passenger-experience .settings-row select {
+  color: var(--cr-ink); background: #fbfcfa; border: 1px solid #dbe4dc;
+  border-radius: 12px; padding: 13px 14px;
+}
+.passenger-experience .form-stack input::placeholder { color: #9aa79e; }
+.passenger-experience .form-stack input:focus,
+.passenger-experience .form-stack select:focus { border-color: var(--cr-primary); box-shadow: 0 0 0 3px rgba(23,107,75,.10); }
+.passenger-experience .map-tools button { min-height: 44px; }
+.passenger-experience .location-status { color: var(--cr-muted); }
+.passenger-experience .ride-option {
+  color: var(--cr-ink); background: #fbfcfa; border: 1px solid #dbe4dc;
+  border-radius: 15px; padding: 15px;
+}
+.passenger-experience .ride-option svg { color: #61746a; }
+.passenger-experience .ride-option small { color: var(--cr-muted); }
+.passenger-experience .ride-option.chosen {
+  color: var(--cr-primary-strong); background: #edf6ee;
+  border-color: var(--cr-primary); box-shadow: inset 0 0 0 1px rgba(23,107,75,.10);
+}
+.passenger-experience .ride-option.chosen svg,
+.passenger-experience .ride-option.chosen small { color: var(--cr-primary); }
+.passenger-experience .mini-panel { padding: 24px; }
+.passenger-experience .mini-panel p { color: var(--cr-muted); }
+.passenger-experience .dark-mini { background: #183d2e; color: #fff; border-color: #183d2e; }
+.passenger-experience .dark-mini h3,
+.passenger-experience .dark-mini p { color: #fff; }
+.passenger-experience .dark-mini .icon-box { background: rgba(255,255,255,.13); color: #d9f36a; }
+.passenger-experience .dark-mini .text-button { color: #d9f36a; }
+.passenger-experience .text-button { color: var(--cr-primary); }
+.passenger-experience .fineprint { color: #78877e; }
+.passenger-experience .place-result,
+.passenger-experience .driver-card-mini {
+  color: var(--cr-ink); background: #fbfcfa; border: 1px solid #dbe4dc; border-radius: 13px;
+}
+.passenger-experience .place-result small,
+.passenger-experience .driver-card-mini small { color: var(--cr-muted); }
+.passenger-experience .place-result:hover,
+.passenger-experience .driver-card-mini.selected-driver {
+  background: #edf6ee; border-color: var(--cr-primary);
+}
+.passenger-experience .driver-card-mini strong { color: var(--cr-primary); }
+.passenger-experience .driver-search-status { background: #edf6ee; color: #365c48; }
+.passenger-experience .ride-map-frame { border-color: #dbe4dc; border-radius: 17px; }
+.passenger-experience .ride-row { border-color: var(--cr-line); }
+.passenger-experience .ride-row small,
+.passenger-experience .ride-info small { color: var(--cr-muted); }
+.passenger-experience .ride-row-icon { background: #e8f2e9; color: var(--cr-primary); }
+.passenger-experience .status-pill { background: #edf6ee; color: var(--cr-primary); border-color: #c9dfce; }
+.passenger-experience .trip-progress-card { background: #eff7ef; border-color: #cfe2d1; color: var(--cr-ink); }
+.passenger-experience .trip-progress-head span { color: var(--cr-primary); }
+.passenger-experience .trip-progress-track { background: #d8e6da; }
+.passenger-experience .trip-progress-track span { background: var(--cr-primary); }
+.passenger-experience .trip-progress-card small { color: #53675a; }
+.passenger-experience .ride-vehicle-badge { background: #edf6ee; border-color: #cfe2d1; color: #214b35; }
+.passenger-experience .wallet-coin { background: #f3f6d8; color: #5d671c; }
+.passenger-experience .rides-panel { padding: clamp(20px, 3vw, 30px); }
+.passenger-experience .settings-panel { color: var(--cr-ink); }
+.passenger-experience .settings-row,
+.passenger-experience .settings-section { border-color: var(--cr-line); }
+.passenger-experience .settings-row small { color: var(--cr-muted); }
+.passenger-experience .settings-section h3 { color: var(--cr-ink); }
+.passenger-experience .mobile-tabbar {
+  background: rgba(255,255,255,.96); border-top: 1px solid var(--cr-line);
+  box-shadow: 0 -10px 30px rgba(26,52,38,.08);
+}
+.passenger-experience .mobile-tabbar button { color: #718077; }
+.passenger-experience .mobile-tabbar button.active { background: #edf6ee; color: var(--cr-primary); }
+.passenger-experience .notice { color: #214b35; background: #edf6ee; border-color: #cfe2d1; }
+.passenger-experience .notice button { color: #214b35; }
+.passenger-experience .auth-layout { max-width: 1100px; }
+.passenger-experience .auth-promo h1 { color: var(--cr-ink); letter-spacing: -2px; }
+.passenger-experience .auth-promo > p { color: var(--cr-muted); }
+.passenger-experience .promo-stat b { color: var(--cr-primary); }
+.passenger-experience .auth-panel .tabs { border-color: var(--cr-line); }
+.passenger-experience .auth-panel .muted { color: var(--cr-muted); }
+.passenger-experience .role-switch button { color: #40534a; background: #fbfcfa; border-color: #dbe4dc; border-radius: 13px; }
+.passenger-experience .role-switch .selected { color: var(--cr-primary); background: #edf6ee; border-color: var(--cr-primary); }
+.passenger-experience .or { border-color: var(--cr-line); color: #829087; }
+.passenger-experience .or span { background: #fff; }
+.passenger-experience .auth-panel details summary { color: var(--cr-primary); }
+.passenger-experience .contact-fab { background: var(--cr-primary); box-shadow: 0 12px 32px rgba(23,107,75,.24); }
+.passenger-experience .sos-button { background: #b42318 !important; color: white !important; }
+@media (max-width: 850px) {
+  .passenger-experience { padding-left: 20px; padding-right: 20px; }
+  .passenger-experience .hero-grid { padding: 48px 0 38px; min-height: auto; }
+  .passenger-experience .hero-art { min-height: 330px; }
+  .passenger-experience .map-grid { height: 330px; }
+}
+@media (max-width: 700px) {
+  .passenger-experience .dashboard { padding-top: 28px; }
+  .passenger-experience .dashboard-head { gap: 10px; }
+  .passenger-experience .dashboard h1 { font-size: 30px; }
+  .passenger-experience .booking-panel { padding: 18px; }
+  .passenger-experience .ride-options { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .passenger-experience .ride-option { padding: 11px 9px; }
+  .passenger-experience .feature-strip { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .passenger-experience { padding-left: 14px; padding-right: 14px; }
+  .passenger-experience .topbar { height: 68px; }
+  .passenger-experience .hero-copy h1 { font-size: clamp(39px, 11vw, 48px); letter-spacing: -2px; }
+  .passenger-experience .hero-copy > p { font-size: 15px; }
+  .passenger-experience .hero-actions { flex-direction: column; align-items: stretch; }
+  .passenger-experience .map-grid { height: 285px; border-radius: 22px; }
+  .passenger-experience .hero-art { min-height: 285px; }
+  .passenger-experience .map-card { left: 12px; right: 12px; bottom: 12px; padding: 11px; }
+  .passenger-experience .panel { border-radius: 18px; }
+  .passenger-experience .ride-options { gap: 6px; }
+  .passenger-experience .ride-option b { font-size: 11px; }
+  .passenger-experience .ride-option small { font-size: 10px; }
+}
+
+/* Final cascade corrections: keep passenger surfaces consistent in either app theme.
+   These selectors intentionally outrank the shared html[data-theme="light"] rules. */
+html[data-theme="light"] .app-shell.passenger-experience {
+  color: var(--cr-ink);
+  background: var(--cr-bg);
+}
+html[data-theme="light"] .app-shell.passenger-experience .panel {
+  color: var(--cr-ink);
+  background: var(--cr-surface);
+  border-color: var(--cr-line);
+}
+html[data-theme="light"] .app-shell.passenger-experience .topbar {
+  border-color: var(--cr-line);
+}
+html[data-theme="light"] .app-shell.passenger-experience .topbar .brand,
+html[data-theme="light"] .app-shell.passenger-experience .nav-link {
+  color: var(--cr-ink);
+}
+html[data-theme="light"] .app-shell.passenger-experience .form-stack input,
+html[data-theme="light"] .app-shell.passenger-experience .form-stack select,
+html[data-theme="light"] .app-shell.passenger-experience .settings-row select {
+  color: var(--cr-ink);
+  background: #fbfcfa;
+  border-color: #dbe4dc;
+}
+html[data-theme="light"] .app-shell.passenger-experience .place-result,
+html[data-theme="light"] .app-shell.passenger-experience .driver-card-mini {
+  color: var(--cr-ink);
+  background: #fbfcfa;
+  border-color: #dbe4dc;
+}
+html[data-theme="light"] .app-shell.passenger-experience .place-result small,
+html[data-theme="light"] .app-shell.passenger-experience .driver-card-mini small {
+  color: var(--cr-muted);
+}
+html[data-theme="light"] .app-shell.passenger-experience .trip-progress-card {
+  color: var(--cr-ink);
+  background: #eff7ef;
+  border-color: #cfe2d1;
+}
+html[data-theme="light"] .app-shell.passenger-experience .trip-progress-card small {
+  color: #53675a;
+}
+html[data-theme="light"] .app-shell.passenger-experience .mobile-tabbar {
+  background: rgba(255,255,255,.96);
+  border-color: var(--cr-line);
+}
+html[data-theme="light"] .app-shell.passenger-experience .mobile-tabbar button {
+  color: #718077;
+}
+html[data-theme="light"] .app-shell.passenger-experience .mobile-tabbar button.active {
+  background: #edf6ee;
+  color: var(--cr-primary);
+}
+.app-shell.passenger-experience .dashboard-grid {
+  align-items: start;
+}
+.app-shell.passenger-experience .form-stack > label {
+  min-width: 0;
+}
+.app-shell.passenger-experience .form-stack input,
+.app-shell.passenger-experience .form-stack select {
+  min-height: 46px;
+}
+.app-shell.passenger-experience .ride-option {
+  min-width: 0;
+}
+.app-shell.passenger-experience .ride-option b,
+.app-shell.passenger-experience .ride-option small {
+  overflow-wrap: anywhere;
+}
+.app-shell.passenger-experience .ride-map-frame {
+  min-height: 220px;
+}
+.app-shell.passenger-experience .mobile-tabbar {
+  z-index: 1000;
+}
+@media (max-width: 700px) {
+  .app-shell.passenger-experience .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .app-shell.passenger-experience .side-stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+/* Official CivicRide wordmark */
+.passenger-experience .brand {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+.passenger-experience .civicride-wordmark {
+  display: block;
+  width: clamp(142px, 16vw, 184px);
+  height: 68px;
+  object-fit: contain;
+  object-position: left center;
+}
+.passenger-experience .footer-brand { min-width: 0; }
+.passenger-experience .civicride-footer-logo {
+  display: block;
+  width: 146px;
+  height: 58px;
+  object-fit: contain;
+  object-position: left center;
+}
+.passenger-experience .booking-panel,
+.passenger-experience .mini-panel,
+.passenger-experience .rides-panel {
+  border: 1px solid var(--cr-line);
+  box-shadow: var(--cr-shadow);
+}
+.passenger-experience .booking-panel { padding: clamp(20px, 2.4vw, 34px); }
+.passenger-experience .form-stack label {
+  color: #30443a;
+  font-weight: 650;
+  gap: 9px;
+}
+.passenger-experience .form-stack input,
+.passenger-experience .form-stack select {
+  min-height: 48px;
+  border-radius: 13px;
+  border: 1px solid #d9e3dc;
+  background: #fbfdfb;
+  color: var(--cr-ink);
+}
+.passenger-experience .form-stack input:focus,
+.passenger-experience .form-stack select:focus {
+  outline: 3px solid rgba(23,107,75,.13);
+  border-color: var(--cr-primary);
+}
+.passenger-experience .ride-option {
+  border: 1px solid var(--cr-line);
+  border-radius: 15px;
+  min-height: 104px;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+.passenger-experience .ride-option:hover { transform: translateY(-2px); }
+.passenger-experience .ride-option.chosen {
+  border-color: var(--cr-primary);
+  background: #eff8f1;
+  box-shadow: inset 0 0 0 1px var(--cr-primary);
+}
+.passenger-experience button:focus-visible,
+.passenger-experience a:focus-visible {
+  outline: 3px solid rgba(23,107,75,.35);
+  outline-offset: 3px;
+}
+@media (max-width: 640px) {
+  .passenger-experience .topbar { height: 72px; }
+  .passenger-experience .civicride-wordmark { width: 142px; height: 58px; }
+  .passenger-experience .civicride-footer-logo { width: 128px; height: 52px; }
+}
+
+/* Passenger UI polish — second design pass */
+.app-shell.passenger-experience .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  background: rgba(245,247,244,.94);
+  backdrop-filter: blur(16px);
+}
+.app-shell.passenger-experience .topbar nav { gap: clamp(10px, 1.7vw, 22px); }
+.app-shell.passenger-experience .nav-link {
+  padding: 10px 4px;
+  font-size: 14px;
+  transition: color .18s ease;
+}
+.app-shell.passenger-experience .topbar .primary { min-height: 44px; }
+.app-shell.passenger-experience .dashboard { max-width: 1240px; margin-inline: auto; }
+.app-shell.passenger-experience .dashboard-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+.app-shell.passenger-experience .dashboard-head h1 {
+  font-size: clamp(30px, 3vw, 42px);
+  line-height: 1.12;
+  margin: 9px 0 7px;
+}
+.app-shell.passenger-experience .dashboard-head p { margin: 0; }
+.app-shell.passenger-experience .profile-chip {
+  border: 1px solid var(--cr-line);
+  border-radius: 999px;
+  padding: 8px 14px 8px 8px;
+  box-shadow: 0 5px 18px rgba(26,52,38,.045);
+}
+.app-shell.passenger-experience .booking-panel .section-title { align-items: center; }
+.app-shell.passenger-experience .booking-panel .section-title h2 {
+  font-size: clamp(25px, 2.4vw, 31px);
+  margin-top: 6px;
+}
+.app-shell.passenger-experience .map-tools {
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #e2eae3;
+  border-radius: 15px;
+  background: #f7faf6;
+}
+.app-shell.passenger-experience .map-tools .outline { white-space: nowrap; }
+.app-shell.passenger-experience .location-status { font-size: 12px; line-height: 1.5; }
+.app-shell.passenger-experience .form-stack label > small {
+  color: #748278;
+  font-weight: 450;
+  line-height: 1.5;
+}
+.app-shell.passenger-experience .form-stack label > .outline.small {
+  align-self: flex-start;
+  min-height: 38px;
+  margin-top: 2px;
+  font-size: 12px;
+}
+.app-shell.passenger-experience .driver-search-status {
+  border: 1px solid #dceadd;
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.app-shell.passenger-experience .driver-card-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  text-align: left;
+}
+.app-shell.passenger-experience .driver-card-mini .driver-meta { flex: 1; min-width: 0; }
+.app-shell.passenger-experience .driver-card-mini .driver-meta b { display: block; }
+.app-shell.passenger-experience .mini-panel .primary { width: 100%; min-height: 46px; }
+.app-shell.passenger-experience .dark-mini { background: linear-gradient(145deg, #174b36, #123b2c); }
+.app-shell.passenger-experience .fineprint { line-height: 1.6; }
+.app-shell.passenger-experience footer {
+  max-width: 1240px;
+  margin: 44px auto 0;
+  padding-top: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+.app-shell.passenger-experience .notice {
+  position: sticky;
+  top: 82px;
+  z-index: 450;
+  border-radius: 13px;
+  box-shadow: 0 8px 28px rgba(26,52,38,.08);
+}
+.app-shell.passenger-experience .auth-layout { padding-top: 46px; padding-bottom: 45px; }
+.app-shell.passenger-experience .auth-promo { padding: clamp(20px, 4vw, 50px) 0; }
+.app-shell.passenger-experience .auth-promo h1 {
+  font-size: clamp(42px, 5vw, 66px);
+  line-height: 1.04;
+}
+.app-shell.passenger-experience .auth-panel { padding: clamp(22px, 3vw, 34px); }
+.app-shell.passenger-experience .auth-panel .tabs button { font-weight: 750; }
+.app-shell.passenger-experience .auth-panel details {
+  margin-top: 18px;
+  padding: 15px 16px;
+  border: 1px solid var(--cr-line);
+  border-radius: 14px;
+  background: #fbfdfb;
+}
+.app-shell.passenger-experience .auth-panel details summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.app-shell.passenger-experience .auth-panel .details-form { margin-top: 18px; }
+.app-shell.passenger-experience .sos-button {
+  min-height: 42px;
+  border-radius: 999px;
+  font-weight: 750;
+}
+@media (max-width: 760px) {
+  .app-shell.passenger-experience .topbar { position: relative; }
+  .app-shell.passenger-experience .topbar nav { gap: 8px; }
+  .app-shell.passenger-experience .topbar .nav-link { font-size: 12px; }
+  .app-shell.passenger-experience .dashboard-head { align-items: flex-start; }
+  .app-shell.passenger-experience .profile-chip { padding: 6px; }
+  .app-shell.passenger-experience .profile-chip > div { display: none; }
+  .app-shell.passenger-experience .map-tools { align-items: flex-start; flex-direction: column; }
+  .app-shell.passenger-experience .map-tools .outline { width: 100%; }
+  .app-shell.passenger-experience footer { justify-content: center; text-align: center; }
+}
+@media (max-width: 480px) {
+  .app-shell.passenger-experience .topbar nav { gap: 5px; }
+  .app-shell.passenger-experience .topbar .nav-link { padding-inline: 2px; }
+  .app-shell.passenger-experience .topbar nav > .primary { padding: 9px 12px; }
+  .app-shell.passenger-experience .dashboard-head h1 { font-size: 28px; }
+  .app-shell.passenger-experience .driver-card-mini { align-items: flex-start; }
+  .app-shell.passenger-experience .auth-layout { padding-top: 24px; }
+}
+
+/* Phase 2: passenger journey feedback and confirmation dialogs */
+.passenger-experience .cr-dialog-backdrop {
+  position: fixed; inset: 0; z-index: 1200; display: grid; place-items: center;
+  padding: 20px; background: rgba(10, 22, 18, .58); backdrop-filter: blur(5px);
+}
+.passenger-experience .cr-dialog {
+  position: relative; width: min(100%, 470px); max-height: min(88vh, 680px); overflow: auto;
+  padding: clamp(24px, 5vw, 34px); border: 1px solid rgba(20, 70, 48, .12); border-radius: 24px;
+  background: #fff; color: #15251d; box-shadow: 0 28px 90px rgba(0,0,0,.24);
+}
+.passenger-experience .cr-dialog h2 { margin: 9px 0 8px; color: #14251c; font-size: clamp(1.45rem, 4vw, 1.9rem); letter-spacing: -.04em; }
+.passenger-experience .cr-dialog .muted { color: #65756c; line-height: 1.6; }
+.passenger-experience .cr-dialog-close { position: absolute; top: 14px; right: 16px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: #f0f5f1; color: #24392d; font-size: 25px; cursor: pointer; }
+.passenger-experience .cr-rating-stars { display: flex; justify-content: center; gap: 9px; padding: 12px 0 18px; }
+.passenger-experience .cr-rating-stars button { border: 0; background: transparent; color: #c7d0ca; padding: 7px; cursor: pointer; transition: transform .16s ease, color .16s ease; }
+.passenger-experience .cr-rating-stars button.is-active { color: #e6a817; }
+.passenger-experience .cr-rating-stars button:hover { transform: translateY(-2px) scale(1.08); }
+.passenger-experience .cr-dialog textarea { width: 100%; min-height: 94px; resize: vertical; border: 1px solid #d9e4dc; border-radius: 12px; padding: 12px 14px; font: inherit; color: #17271e; background: #fbfdfb; }
+.passenger-experience .cr-dialog-actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+.passenger-experience .danger-button { border: 0; border-radius: 12px; padding: 12px 17px; background: #b83232; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+.passenger-experience .cr-dialog button:focus-visible, .passenger-experience .cr-dialog textarea:focus-visible { outline: 3px solid rgba(22, 163, 74, .35); outline-offset: 2px; }
+@media (max-width: 520px) {
+  .passenger-experience .cr-dialog-backdrop { align-items: end; padding: 10px; }
+  .passenger-experience .cr-dialog { width: 100%; border-radius: 22px; padding: 26px 20px max(24px, env(safe-area-inset-bottom)); }
+  .passenger-experience .cr-dialog-actions > button { flex: 1 1 140px; }
+}
+.passenger-experience .cr-rating-hint { margin: 0; text-align: center; color: #6b7b71; font-size: .9rem; }
+
+/* Passenger authentication: clearer registration hierarchy */
+.passenger-experience .auth-panel { max-width: 520px; }
+.passenger-experience .signup-details {
+  margin-top: 18px; padding: 17px 18px; border: 1px solid var(--cr-line);
+  border-radius: 18px; background: #fbfdfb;
+}
+.passenger-experience .signup-details summary {
+  color: var(--cr-primary); font-weight: 750; cursor: pointer;
+  line-height: 1.5; padding: 2px 0;
+}
+.passenger-experience .signup-details[open] summary { margin-bottom: 16px; }
+.passenger-experience .auth-step-note { margin: 0 0 2px; color: var(--cr-muted); font-size: .9rem; line-height: 1.55; }
+.passenger-experience .auth-field-hint { display: block; margin-top: 6px; color: var(--cr-muted); font-size: .78rem; line-height: 1.45; }
+.passenger-experience .signup-details .details-form { gap: 13px; }
+.passenger-experience .signup-details .inline-input { align-items: stretch; }
+.passenger-experience .signup-details .inline-input input { min-width: 0; }
+.passenger-experience .signup-details .inline-input button { flex: 0 0 auto; white-space: nowrap; }
+@media (max-width: 560px) {
+  .passenger-experience .signup-details { padding: 14px; }
+  .passenger-experience .signup-details .inline-input { flex-direction: column; }
+  .passenger-experience .signup-details .inline-input button { width: 100%; }
+}
+
+
+/* Passenger authentication: clearer registration hierarchy */
+.passenger-experience .auth-panel { max-width: 520px; }
+.passenger-experience .signup-details { margin-top: 18px; padding: 17px 18px; border: 1px solid var(--cr-line); border-radius: 18px; background: #fbfdfb; }
+.passenger-experience .signup-details summary { color: var(--cr-primary); font-weight: 750; cursor: pointer; line-height: 1.5; padding: 2px 0; }
+.passenger-experience .signup-details[open] summary { margin-bottom: 16px; }
+.passenger-experience .auth-step-note { margin: 0 0 2px; color: var(--cr-muted); font-size: .9rem; line-height: 1.55; }
+.passenger-experience .auth-field-hint { display: block; margin-top: 6px; color: var(--cr-muted); font-size: .78rem; line-height: 1.45; }
+.passenger-experience .signup-details .details-form { gap: 13px; }
+.passenger-experience .signup-details .inline-input { align-items: stretch; }
+.passenger-experience .signup-details .inline-input input { min-width: 0; }
+.passenger-experience .signup-details .inline-input button { flex: 0 0 auto; white-space: nowrap; }
+@media (max-width: 560px) { .passenger-experience .signup-details { padding: 14px; } .passenger-experience .signup-details .inline-input { flex-direction: column; } .passenger-experience .signup-details .inline-input button { width: 100%; } }
+
+/* Phase 2A–2C: passenger booking, live-trip and wallet refinement */
+.passenger-experience .passenger-booking-heading { align-items: flex-start; }
+.passenger-experience .booking-intro-copy { max-width: 560px; margin: 8px 0 0; color: var(--cr-muted); line-height: 1.55; }
+.passenger-experience .booking-steps { display:flex; align-items:center; gap:10px; margin: 4px 0 22px; }
+.passenger-experience .booking-steps > i { height:1px; flex:1; background:var(--cr-border); }
+.passenger-experience .booking-step { display:flex; align-items:center; gap:7px; color:var(--cr-muted); }
+.passenger-experience .booking-step b { display:grid; place-items:center; width:27px; height:27px; border-radius:50%; border:1px solid var(--cr-border); font-size:12px; }
+.passenger-experience .booking-step.active b { background:var(--cr-primary); border-color:var(--cr-primary); color:#fff; }
+.passenger-experience .booking-step small { font-size:12px; font-weight:650; }
+.passenger-experience .booking-map-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin: 4px 0 10px; }
+.passenger-experience .booking-map-heading > div { display:grid; gap:3px; }
+.passenger-experience .booking-map-heading b { font-size:14px; }
+.passenger-experience .booking-map-heading small { color:var(--cr-muted); font-size:12px; }
+.passenger-experience .map-live-label { display:flex; align-items:center; gap:6px; color:var(--cr-muted); font-size:10px; font-weight:800; letter-spacing:.08em; }
+.passenger-experience .map-live-label span { width:7px; height:7px; border-radius:50%; background:#28a66a; }
+.passenger-experience .wallet-panel { gap:12px; }
+.passenger-experience .wallet-panel-top { display:flex; justify-content:space-between; align-items:center; }
+.passenger-experience .wallet-panel-top h3 { margin:5px 0 0; }
+.passenger-experience .wallet-icon,.passenger-experience .wallet-transaction-mark,.passenger-experience .live-driver-avatar { display:grid; place-items:center; flex:0 0 auto; border-radius:14px; background:#eaf4eb; color:var(--cr-primary); width:42px; height:42px; }
+.passenger-experience .wallet-balance-value { font-size:clamp(28px,4vw,36px); font-weight:850; letter-spacing:-.045em; line-height:1.15; color:var(--cr-ink); }
+.passenger-experience .wallet-rewards-line { display:flex; align-items:center; justify-content:space-between; gap:8px; color:var(--cr-muted); font-size:12px; }
+.passenger-experience .wallet-topup-block { display:grid; gap:8px; padding:14px; border:1px solid var(--cr-border); border-radius:16px; background:var(--cr-surface-soft, #f8faf8); }
+.passenger-experience .wallet-topup-block label { font-size:13px; font-weight:750; }
+.passenger-experience .wallet-amount-input { display:flex; align-items:center; gap:8px; min-height:46px; padding:0 12px; border:1px solid var(--cr-border); border-radius:11px; background:var(--cr-surface, #fff); }
+.passenger-experience .wallet-amount-input > span { font-weight:800; color:var(--cr-muted); }
+.passenger-experience .wallet-amount-input input { width:100%; min-width:0; border:0; outline:0; background:transparent; color:var(--cr-ink); font:inherit; }
+.passenger-experience .wallet-topup-block > small { color:var(--cr-muted); line-height:1.45; font-size:11px; }
+.passenger-experience .wallet-topup-block .primary { display:flex; justify-content:center; align-items:center; gap:8px; }
+.passenger-experience .wallet-history-heading { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:5px; }
+.passenger-experience .wallet-history-heading b { font-size:13px; }
+.passenger-experience .wallet-history-heading .text-button { padding:4px 0; }
+.passenger-experience .wallet-empty-state { margin:0; padding:13px; border:1px dashed var(--cr-border); border-radius:12px; color:var(--cr-muted); font-size:12px; line-height:1.5; }
+.passenger-experience .wallet-transactions-list { display:grid; gap:0; }
+.passenger-experience .wallet-transaction-row { display:flex; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid var(--cr-border); }
+.passenger-experience .wallet-transaction-mark { width:34px; height:34px; border-radius:11px; }
+.passenger-experience .wallet-transaction-info { display:grid; flex:1; min-width:0; gap:3px; }
+.passenger-experience .wallet-transaction-info b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
+.passenger-experience .wallet-transaction-info small { color:var(--cr-muted); font-size:10px; text-transform:capitalize; }
+.passenger-experience .wallet-transaction-row > strong { font-size:12px; white-space:nowrap; }
+.passenger-experience .wallet-view-rides { align-self:flex-start; padding:4px 0; }
+.passenger-experience .live-driver-summary { display:flex; align-items:center; gap:11px; margin-top:12px; padding:11px; border:1px solid var(--cr-border); border-radius:13px; background:rgba(255,255,255,.62); }
+.passenger-experience .live-driver-summary > div { display:grid; gap:3px; min-width:0; }
+.passenger-experience .live-driver-summary b { font-size:13px; }
+.passenger-experience .live-driver-summary small { color:var(--cr-muted); font-size:11px; }
+.passenger-experience .live-driver-summary strong { font-size:11px; letter-spacing:.03em; }
+@media (max-width:560px) {
+  .passenger-experience .booking-steps { gap:6px; }
+  .passenger-experience .booking-step { gap:5px; }
+  .passenger-experience .booking-step small { font-size:10px; }
+  .passenger-experience .booking-intro-copy { font-size:13px; }
+  .passenger-experience .wallet-topup-block { padding:12px; }
+}
+
+
+/* CivicRide contrast repair — explicit foreground/background pairing.
+   Keep the passenger palette; never rely on inherited global dark-theme text. */
+.app-shell.passenger-experience {
+  --cr-text-primary: #17251f;
+  --cr-text-secondary: #52645a;
+  --cr-text-subtle: #64756b;
+  --cr-card: #ffffff;
+  --cr-card-border: #dce6de;
+}
+.app-shell.passenger-experience .panel,
+.app-shell.passenger-experience .mini-panel:not(.dark-mini),
+.app-shell.passenger-experience .wallet-panel {
+  color: var(--cr-text-primary) !important;
+  background: #ffffff !important;
+  border-color: var(--cr-card-border) !important;
+}
+.app-shell.passenger-experience .panel h1,
+.app-shell.passenger-experience .panel h2,
+.app-shell.passenger-experience .panel h3,
+.app-shell.passenger-experience .panel h4,
+.app-shell.passenger-experience .panel b,
+.app-shell.passenger-experience .panel strong,
+.app-shell.passenger-experience .mini-panel:not(.dark-mini) h3,
+.app-shell.passenger-experience .wallet-panel .wallet-balance-value,
+.app-shell.passenger-experience .wallet-panel .wallet-history-heading b,
+.app-shell.passenger-experience .wallet-panel .wallet-transaction-info b,
+.app-shell.passenger-experience .wallet-panel .wallet-transaction-row > strong {
+  color: #17251f !important;
+}
+.app-shell.passenger-experience .panel p,
+.app-shell.passenger-experience .panel small,
+.app-shell.passenger-experience .panel label,
+.app-shell.passenger-experience .panel .muted,
+.app-shell.passenger-experience .wallet-panel .wallet-rewards-line,
+.app-shell.passenger-experience .wallet-panel .wallet-empty-state,
+.app-shell.passenger-experience .wallet-panel .wallet-transaction-info small,
+.app-shell.passenger-experience .wallet-panel .wallet-topup-block > small {
+  color: #52645a !important;
+}
+.app-shell.passenger-experience .wallet-panel .eyebrow {
+  color: #176b4b !important;
+  font-weight: 800;
+}
+.app-shell.passenger-experience .wallet-panel .wallet-topup-block {
+  background: #f3f7f3 !important;
+  border-color: #dce6de !important;
+}
+.app-shell.passenger-experience .wallet-panel .wallet-topup-block label,
+.app-shell.passenger-experience .wallet-panel .wallet-amount-input input {
+  color: #17251f !important;
+}
+.app-shell.passenger-experience .wallet-panel .wallet-amount-input input::placeholder {
+  color: #64756b !important;
+  opacity: 1;
+}
+.app-shell.passenger-experience .wallet-panel .wallet-amount-input {
+  background: #ffffff !important;
+  border-color: #cbd9ce !important;
+}
+.app-shell.passenger-experience .wallet-panel .text-button,
+.app-shell.passenger-experience .panel .text-button {
+  color: #126342 !important;
+}
+.app-shell.passenger-experience .panel .primary,
+.app-shell.passenger-experience .wallet-panel .primary {
+  color: #ffffff !important;
+  background: #176b4b !important;
+  border-color: #176b4b !important;
+}
+
+/* Safety Centre: white/light surface with dark readable copy and intentional dark safety cards. */
+.app-shell.passenger-experience .safety-center-panel {
+  color: #17251f !important;
+  background: #ffffff !important;
+}
+.app-shell.passenger-experience .safety-center-panel > h2,
+.app-shell.passenger-experience .safety-center-panel > p {
+  color: #17251f !important;
+}
+.app-shell.passenger-experience .safety-center-panel > p {
+  color: #52645a !important;
+  line-height: 1.65;
+}
+.app-shell.passenger-experience .safety-center-panel .safety-note {
+  color: #ffffff !important;
+  background: #183d2e !important;
+  border: 1px solid #285943;
+  line-height: 1.55;
+}
+.app-shell.passenger-experience .safety-center-panel .admin-row {
+  color: #17251f !important;
+  background: #f5f8f5 !important;
+  border: 1px solid #dce6de !important;
+  border-radius: 14px;
+  padding: 14px;
+}
+.app-shell.passenger-experience .safety-center-panel .admin-row b {
+  color: #17251f !important;
+}
+.app-shell.passenger-experience .safety-center-panel .admin-row small {
+  color: #52645a !important;
+}
+.app-shell.passenger-experience .safety-center-panel .feature-grid .feature {
+  color: #ffffff !important;
+  background: #183d2e !important;
+  border: 1px solid #285943 !important;
+}
+.app-shell.passenger-experience .safety-center-panel .feature b {
+  color: #ffffff !important;
+}
+.app-shell.passenger-experience .safety-center-panel .feature span {
+  color: #e1eee6 !important;
+  line-height: 1.5;
+}
+.app-shell.passenger-experience .safety-center-panel .feature svg {
+  color: #8ee0b3 !important;
+}
+.app-shell.passenger-experience .dark-mini,
+.app-shell.passenger-experience .dark-mini h3,
+.app-shell.passenger-experience .dark-mini p {
+  color: #ffffff !important;
+}
+.app-shell.passenger-experience .dark-mini .text-button {
+  color: #d9f36a !important;
+}
+.app-shell.passenger-experience input,
+.app-shell.passenger-experience textarea,
+.app-shell.passenger-experience select {
+  color: #17251f;
+}
+.app-shell.passenger-experience input::placeholder,
+.app-shell.passenger-experience textarea::placeholder {
+  color: #64756b;
+  opacity: 1;
+}
+.app-shell.passenger-experience button:disabled {
+  color: #52645a;
+  opacity: .68;
+}

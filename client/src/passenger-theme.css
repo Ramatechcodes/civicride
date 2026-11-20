@@ -583,3 +583,197 @@ html[data-theme="light"] .app-shell.passenger-experience .mobile-tabbar button.a
 .passenger-experience .signup-details .inline-input input { min-width: 0; }
 .passenger-experience .signup-details .inline-input button { flex: 0 0 auto; white-space: nowrap; }
 @media (max-width: 560px) { .passenger-experience .signup-details { padding: 14px; } .passenger-experience .signup-details .inline-input { flex-direction: column; } .passenger-experience .signup-details .inline-input button { width: 100%; } }
+
+/* Phase 2A–2C: passenger booking, live-trip and wallet refinement */
+.passenger-experience .passenger-booking-heading { align-items: flex-start; }
+.passenger-experience .booking-intro-copy { max-width: 560px; margin: 8px 0 0; color: var(--cr-muted); line-height: 1.55; }
+.passenger-experience .booking-steps { display:flex; align-items:center; gap:10px; margin: 4px 0 22px; }
+.passenger-experience .booking-steps > i { height:1px; flex:1; background:var(--cr-border); }
+.passenger-experience .booking-step { display:flex; align-items:center; gap:7px; color:var(--cr-muted); }
+.passenger-experience .booking-step b { display:grid; place-items:center; width:27px; height:27px; border-radius:50%; border:1px solid var(--cr-border); font-size:12px; }
+.passenger-experience .booking-step.active b { background:var(--cr-primary); border-color:var(--cr-primary); color:#fff; }
+.passenger-experience .booking-step small { font-size:12px; font-weight:650; }
+.passenger-experience .booking-map-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin: 4px 0 10px; }
+.passenger-experience .booking-map-heading > div { display:grid; gap:3px; }
+.passenger-experience .booking-map-heading b { font-size:14px; }
+.passenger-experience .booking-map-heading small { color:var(--cr-muted); font-size:12px; }
+.passenger-experience .map-live-label { display:flex; align-items:center; gap:6px; color:var(--cr-muted); font-size:10px; font-weight:800; letter-spacing:.08em; }
+.passenger-experience .map-live-label span { width:7px; height:7px; border-radius:50%; background:#28a66a; }
+.passenger-experience .wallet-panel { gap:12px; }
+.passenger-experience .wallet-panel-top { display:flex; justify-content:space-between; align-items:center; }
+.passenger-experience .wallet-panel-top h3 { margin:5px 0 0; }
+.passenger-experience .wallet-icon,.passenger-experience .wallet-transaction-mark,.passenger-experience .live-driver-avatar { display:grid; place-items:center; flex:0 0 auto; border-radius:14px; background:#eaf4eb; color:var(--cr-primary); width:42px; height:42px; }
+.passenger-experience .wallet-balance-value { font-size:clamp(28px,4vw,36px); font-weight:850; letter-spacing:-.045em; line-height:1.15; color:var(--cr-ink); }
+.passenger-experience .wallet-rewards-line { display:flex; align-items:center; justify-content:space-between; gap:8px; color:var(--cr-muted); font-size:12px; }
+.passenger-experience .wallet-topup-block { display:grid; gap:8px; padding:14px; border:1px solid var(--cr-border); border-radius:16px; background:var(--cr-surface-soft, #f8faf8); }
+.passenger-experience .wallet-topup-block label { font-size:13px; font-weight:750; }
+.passenger-experience .wallet-amount-input { display:flex; align-items:center; gap:8px; min-height:46px; padding:0 12px; border:1px solid var(--cr-border); border-radius:11px; background:var(--cr-surface, #fff); }
+.passenger-experience .wallet-amount-input > span { font-weight:800; color:var(--cr-muted); }
+.passenger-experience .wallet-amount-input input { width:100%; min-width:0; border:0; outline:0; background:transparent; color:var(--cr-ink); font:inherit; }
+.passenger-experience .wallet-topup-block > small { color:var(--cr-muted); line-height:1.45; font-size:11px; }
+.passenger-experience .wallet-topup-block .primary { display:flex; justify-content:center; align-items:center; gap:8px; }
+.passenger-experience .wallet-history-heading { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:5px; }
+.passenger-experience .wallet-history-heading b { font-size:13px; }
+.passenger-experience .wallet-history-heading .text-button { padding:4px 0; }
+.passenger-experience .wallet-empty-state { margin:0; padding:13px; border:1px dashed var(--cr-border); border-radius:12px; color:var(--cr-muted); font-size:12px; line-height:1.5; }
+.passenger-experience .wallet-transactions-list { display:grid; gap:0; }
+.passenger-experience .wallet-transaction-row { display:flex; align-items:center; gap:10px; padding:11px 0; border-bottom:1px solid var(--cr-border); }
+.passenger-experience .wallet-transaction-mark { width:34px; height:34px; border-radius:11px; }
+.passenger-experience .wallet-transaction-info { display:grid; flex:1; min-width:0; gap:3px; }
+.passenger-experience .wallet-transaction-info b { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
+.passenger-experience .wallet-transaction-info small { color:var(--cr-muted); font-size:10px; text-transform:capitalize; }
+.passenger-experience .wallet-transaction-row > strong { font-size:12px; white-space:nowrap; }
+.passenger-experience .wallet-view-rides { align-self:flex-start; padding:4px 0; }
+.passenger-experience .live-driver-summary { display:flex; align-items:center; gap:11px; margin-top:12px; padding:11px; border:1px solid var(--cr-border); border-radius:13px; background:rgba(255,255,255,.62); }
+.passenger-experience .live-driver-summary > div { display:grid; gap:3px; min-width:0; }
+.passenger-experience .live-driver-summary b { font-size:13px; }
+.passenger-experience .live-driver-summary small { color:var(--cr-muted); font-size:11px; }
+.passenger-experience .live-driver-summary strong { font-size:11px; letter-spacing:.03em; }
+@media (max-width:560px) {
+  .passenger-experience .booking-steps { gap:6px; }
+  .passenger-experience .booking-step { gap:5px; }
+  .passenger-experience .booking-step small { font-size:10px; }
+  .passenger-experience .booking-intro-copy { font-size:13px; }
+  .passenger-experience .wallet-topup-block { padding:12px; }
+}
+
+
+/* CivicRide contrast repair — explicit foreground/background pairing.
+   Keep the passenger palette; never rely on inherited global dark-theme text. */
+.app-shell.passenger-experience {
+  --cr-text-primary: #17251f;
+  --cr-text-secondary: #52645a;
+  --cr-text-subtle: #64756b;
+  --cr-card: #ffffff;
+  --cr-card-border: #dce6de;
+}
+.app-shell.passenger-experience .panel,
+.app-shell.passenger-experience .mini-panel:not(.dark-mini),
+.app-shell.passenger-experience .wallet-panel {
+  color: var(--cr-text-primary) !important;
+  background: #ffffff !important;
+  border-color: var(--cr-card-border) !important;
+}
+.app-shell.passenger-experience .panel h1,
+.app-shell.passenger-experience .panel h2,
+.app-shell.passenger-experience .panel h3,
+.app-shell.passenger-experience .panel h4,
+.app-shell.passenger-experience .panel b,
+.app-shell.passenger-experience .panel strong,
+.app-shell.passenger-experience .mini-panel:not(.dark-mini) h3,
+.app-shell.passenger-experience .wallet-panel .wallet-balance-value,
+.app-shell.passenger-experience .wallet-panel .wallet-history-heading b,
+.app-shell.passenger-experience .wallet-panel .wallet-transaction-info b,
+.app-shell.passenger-experience .wallet-panel .wallet-transaction-row > strong {
+  color: #17251f !important;
+}
+.app-shell.passenger-experience .panel p,
+.app-shell.passenger-experience .panel small,
+.app-shell.passenger-experience .panel label,
+.app-shell.passenger-experience .panel .muted,
+.app-shell.passenger-experience .wallet-panel .wallet-rewards-line,
+.app-shell.passenger-experience .wallet-panel .wallet-empty-state,
+.app-shell.passenger-experience .wallet-panel .wallet-transaction-info small,
+.app-shell.passenger-experience .wallet-panel .wallet-topup-block > small {
+  color: #52645a !important;
+}
+.app-shell.passenger-experience .wallet-panel .eyebrow {
+  color: #176b4b !important;
+  font-weight: 800;
+}
+.app-shell.passenger-experience .wallet-panel .wallet-topup-block {
+  background: #f3f7f3 !important;
+  border-color: #dce6de !important;
+}
+.app-shell.passenger-experience .wallet-panel .wallet-topup-block label,
+.app-shell.passenger-experience .wallet-panel .wallet-amount-input input {
+  color: #17251f !important;
+}
+.app-shell.passenger-experience .wallet-panel .wallet-amount-input input::placeholder {
+  color: #64756b !important;
+  opacity: 1;
+}
+.app-shell.passenger-experience .wallet-panel .wallet-amount-input {
+  background: #ffffff !important;
+  border-color: #cbd9ce !important;
+}
+.app-shell.passenger-experience .wallet-panel .text-button,
+.app-shell.passenger-experience .panel .text-button {
+  color: #126342 !important;
+}
+.app-shell.passenger-experience .panel .primary,
+.app-shell.passenger-experience .wallet-panel .primary {
+  color: #ffffff !important;
+  background: #176b4b !important;
+  border-color: #176b4b !important;
+}
+
+/* Safety Centre: white/light surface with dark readable copy and intentional dark safety cards. */
+.app-shell.passenger-experience .safety-center-panel {
+  color: #17251f !important;
+  background: #ffffff !important;
+}
+.app-shell.passenger-experience .safety-center-panel > h2,
+.app-shell.passenger-experience .safety-center-panel > p {
+  color: #17251f !important;
+}
+.app-shell.passenger-experience .safety-center-panel > p {
+  color: #52645a !important;
+  line-height: 1.65;
+}
+.app-shell.passenger-experience .safety-center-panel .safety-note {
+  color: #ffffff !important;
+  background: #183d2e !important;
+  border: 1px solid #285943;
+  line-height: 1.55;
+}
+.app-shell.passenger-experience .safety-center-panel .admin-row {
+  color: #17251f !important;
+  background: #f5f8f5 !important;
+  border: 1px solid #dce6de !important;
+  border-radius: 14px;
+  padding: 14px;
+}
+.app-shell.passenger-experience .safety-center-panel .admin-row b {
+  color: #17251f !important;
+}
+.app-shell.passenger-experience .safety-center-panel .admin-row small {
+  color: #52645a !important;
+}
+.app-shell.passenger-experience .safety-center-panel .feature-grid .feature {
+  color: #ffffff !important;
+  background: #183d2e !important;
+  border: 1px solid #285943 !important;
+}
+.app-shell.passenger-experience .safety-center-panel .feature b {
+  color: #ffffff !important;
+}
+.app-shell.passenger-experience .safety-center-panel .feature span {
+  color: #e1eee6 !important;
+  line-height: 1.5;
+}
+.app-shell.passenger-experience .safety-center-panel .feature svg {
+  color: #8ee0b3 !important;
+}
+.app-shell.passenger-experience .dark-mini,
+.app-shell.passenger-experience .dark-mini h3,
+.app-shell.passenger-experience .dark-mini p {
+  color: #ffffff !important;
+}
+.app-shell.passenger-experience .dark-mini .text-button {
+  color: #d9f36a !important;
+}
+.app-shell.passenger-experience input,
+.app-shell.passenger-experience textarea,
+.app-shell.passenger-experience select {
+  color: #17251f;
+}
+.app-shell.passenger-experience input::placeholder,
+.app-shell.passenger-experience textarea::placeholder {
+  color: #64756b;
+  opacity: 1;
+}
+.app-shell.passenger-experience button:disabled {
+  color: #52645a;
+  opacity: .68;
+}

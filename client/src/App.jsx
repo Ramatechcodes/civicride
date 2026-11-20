@@ -88,6 +88,11 @@ export default function App() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [savingPassword, setSavingPassword] = useState(false);
+  const [ratingRide, setRatingRide] = useState(null);
+  const [ratingValue, setRatingValue] = useState(5);
+  const [cancelRide, setCancelRide] = useState(null);
+  const walletRequestRef = useRef(0);
+  const walletSessionRef = useRef('');
 
   const [availableRides, setAvailableRides] = useState([]);
 
@@ -126,6 +131,7 @@ const [selectedDocumentDriverId, setSelectedDocumentDriverId] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const [fileKey, setFileKey] = useState(0);
+  walletSessionRef.current = `${token}:${user?._id || ''}:${user?.role || ''}`;
   useEffect(() => {
     document.documentElement.dataset.theme = darkMode ? 'dark' : 'light';
     localStorage.setItem('cr_theme', darkMode ? 'dark' : 'light');
@@ -519,11 +525,25 @@ useEffect(()=>{
     api(`/payments/wallet/verify/${encodeURIComponent(txId)}`).then(async d=>{setNotice(d.message);await refreshMe();setView('home');}).catch(e=>setNotice(e.message));
   },[sessionReady,token,user?._id]);
 
-  async function loadWalletHistory(){try{const d=await api('/payments/wallet/history');setWalletTransactions(d.transactions||[])}catch(e){setNotice(e.message)}}
+  async function loadWalletHistory() {
+    if (!sessionReady || !token || user?.role !== 'passenger') return;
+    const sessionKey = `${token}:${user?._id || ''}:${user?.role || ''}`;
+    const requestId = ++walletRequestRef.current;
+    try {
+      const d = await api('/payments/wallet/history');
+      if (walletSessionRef.current !== sessionKey || walletRequestRef.current !== requestId) return;
+      setWalletTransactions(Array.isArray(d.transactions) ? d.transactions : []);
+    } catch (e) {
+      if (walletSessionRef.current === sessionKey && walletRequestRef.current === requestId) setNotice(e.message);
+    }
+  }
 
   useEffect(() => {
+    walletRequestRef.current += 1;
+    setWalletTransactions([]);
     if (sessionReady && token && user?.role === 'passenger') loadWalletHistory();
-  }, [sessionReady, token, user?._id]);
+    return () => { walletRequestRef.current += 1; };
+  }, [sessionReady, token, user?._id, user?.role]);
   async function topUpWallet(){
     try{const amount=Number(topupAmount);if(!Number.isFinite(amount)||amount<500)throw new Error('Minimum top-up is ₦500.');const d=await api('/payments/wallet/initialize',{method:'POST',body:JSON.stringify({amount})});window.location.href=d.paymentUrl;}
     catch(e){setNotice(e.message)}
@@ -576,7 +596,32 @@ async function rideAction(id, action, body = {}) {
 
   }
 
-  async function pay(rideId) {
+  async function submitRideRating(e) {
+    e.preventDefault();
+    if (!ratingRide) return;
+    setBusy(true);
+    try {
+      await api(`/rides/${ratingRide._id}/rating`, { method: 'POST', body: JSON.stringify({ rating: ratingValue }) });
+      setNotice('Thank you for rating your ride.');
+      setRatingRide(null); setRatingValue(5);
+      await loadRides(); await loadAvailableRides();
+    } catch (e) { setNotice(e.message); }
+    finally { setBusy(false); }
+  }
+
+  async function confirmRideCancellation() {
+    if (!cancelRide) return;
+    setBusy(true);
+    try {
+      await api(`/rides/${cancelRide._id}/status`, { method: 'PATCH', body: JSON.stringify({ status: 'cancelled' }) });
+      setNotice('Ride updated');
+      setCancelRide(null);
+      await loadRides(); await loadAvailableRides();
+    } catch (e) { setNotice(e.message); }
+    finally { setBusy(false); }
+  }
+
+  async function pay(rideId) {
 
     try { const d = await api('/payments/initialize', { method: 'POST', body: JSON.stringify({ rideId }) }); window.location.href = d.paymentUrl; }
 
@@ -592,7 +637,7 @@ async function rideAction(id, action, body = {}) {
   return (
     <div className={`app-shell ${isPassengerExperience ? 'passenger-experience' : ''}`}>
 
-    <header className="topbar"><a className="brand" onClick={() => setView('home')}><span className="brand-icon"><Navigation size={22}/></span><span>Civic<span className="green">Ride</span><small>Ride smarter. Live better.</small></span></a>
+    <header className="topbar"><a className="brand" onClick={() => setView('home')}>{isPassengerExperience ? <img className="civicride-wordmark" src="/civicride-logo.png" alt="CivicRide — Rides for a better tomorrow"/> : <><span className="brand-icon"><Navigation size={22}/></span><span>Civic<span className="green">Ride</span><small>Ride smarter. Live better.</small></span></>}</a>
 
       <nav><button className="nav-link" onClick={() => setView('home')}>Home</button>{user && <>{user.role !== 'admin' && <button className="nav-link" onClick={() => { setView('rides'); loadRides(); }}>My rides</button>}{user.role === 'admin' && <button className="nav-link" onClick={() => { setView('admin'); loadAdmin(); }}>Admin console</button>}<button className="nav-link" onClick={() => setView('safety')}>Safety</button></>}{user ? <button className="outline" onClick={logout}><LogOut size={16}/> Sign out</button> : <button className="primary small" onClick={() => setView('auth')}>Get started</button>}</nav>
 
@@ -650,9 +695,12 @@ async function rideAction(id, action, body = {}) {
 
       {view === 'activities' && user && <section className="panel rides-panel"><div className="section-title"><div><span className="eyebrow">TRIP HISTORY</span><h2>Activities</h2></div><button className="outline" onClick={loadRides}>Refresh</button></div>{rides.length===0?<p className="muted">Your ride activity will appear here.</p>:rides.slice().sort((a,b)=>new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0)).map(r=><div className="admin-row" key={r._id}><div><b>{r.pickup?.address} → {r.destination?.address}</b><small>{new Date(r.createdAt||Date.now()).toLocaleString()} · {r.category} · {money(r.finalFare??r.estimatedFare)}</small><small>Ride status: {String(r.status||'unknown').replaceAll('_',' ')} · Payment: {r.paymentStatus||'pending'}</small></div><span className="status-pill">{r.status}</span></div>)}</section>}
 
-      {view === 'rides' && user && <section className="panel rides-panel"><div className="section-title"><div><span className="eyebrow">YOUR ACTIVITY</span><h2>{user.role === 'driver' ? 'Available rides' : 'Your rides'}</h2></div><button className="outline" onClick={loadRides}>Refresh</button></div>{rides.length === 0 ? <p className="muted">No rides to show yet.</p> : rides.map(r => <div className="ride-row" key={r._id}><div className="ride-row-icon"><CarFront/></div><div className="ride-info"><b>{r.pickup.address} → {r.destination.address}</b><small>{r.status.replace('_', ' ')} · {r.category} · {money(r.finalFare ?? r.estimatedFare)}</small><small>Payment: {r.paymentStatus} ({r.paymentMethod}) · Coins earned: {r.coinsAwarded||0}</small>{user.role==='passenger'&&r.driver&&<div className="ride-vehicle-badge"><b>{r.driver.name}</b><div>{r.driver.vehicle?.make} {r.driver.vehicle?.model} · {r.driver.vehicle?.color||''}</div><strong>Plate: {r.driver.vehicle?.plateNumber||'Not supplied'}</strong></div>}{['requested','accepted','arriving','in_progress'].includes(r.status)&&<div className="trip-progress-card"><div className="trip-progress-head"><b>{r.status==='requested'?'Finding your driver':r.status==='accepted'?'Your driver is on the way':r.status==='arriving'?'Driver approaching pickup':`You are on your way`}</b><span>{r.status==='in_progress'?'ON TRIP':'LIVE UPDATE'}</span></div>{(()=>{const loc=String(liveDriverLocation?.rideId)===String(r._id)?liveDriverLocation:null;const p=tripProgress(r,loc);const remaining=r.status==='in_progress'?p.remainingKm:loc?distanceBetween(loc,r.pickup):null;return <><div className="trip-progress-track" role="progressbar" aria-label="Trip progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={p.percent}><span style={{width:`${p.percent}%`}}/></div><div className="trip-progress-meta"><b>{r.status==='in_progress'?`${p.percent}% complete`:r.status==='arriving'?'Driver approaching pickup':r.status==='accepted'?'Driver assigned':'Finding a driver'}</b>{r.status==='in_progress'&&<span>{remaining===null?'Waiting for live GPS':remaining<0.1?'Almost at destination':`${remaining.toFixed(1)} km remaining*`}</span>}{r.status==='arriving'&&<span>{remaining===null?'Waiting for driver GPS':remaining<0.1?'Driver is very close':`${remaining.toFixed(1)} km to pickup*`}</span>}</div></>})()}<div className="live-driver-summary"><span className="live-driver-avatar"><CarFront size={18}/></span><div><b>{r.driver?.name||'Driver details pending'}</b><small>{[r.driver?.vehicle?.color,r.driver?.vehicle?.make,r.driver?.vehicle?.model].filter(Boolean).join(' ')||'Vehicle details will appear when assigned'}</small><strong>Plate: {r.driver?.vehicle?.plateNumber||'Pending assignment'}</strong></div></div>{r.status==='in_progress'&&<small>*Distance is a straight-line GPS estimate; the actual road distance may differ.</small>}</div>}{['accepted','arriving','in_progress'].includes(r.status)&&r.driver&&<div className="ride-live-map"><RideMap pickup={r.pickup} destination={r.destination} liveDriverLocation={liveDriverLocation?.rideId===r._id?liveDriverLocation:null} center={liveDriverLocation?.rideId===r._id?liveDriverLocation:r.pickup} height={220}/><small>Live driver location updates while driver app is online and trip is active.</small></div>}</div><div className="ride-actions">{user.role === 'passenger' && r.paymentMethod === 'flutterwave' && r.paymentStatus !== 'paid' && <button className="outline small" onClick={() => pay(r._id)}>Pay online</button>}{user.role === 'driver' && r.status === 'accepted' && <button className="outline small" onClick={() => rideAction(r._id, 'status', { status: 'arriving' })}>Arriving</button>}{user.role === 'driver' && r.status === 'arriving' && <button className="outline small" onClick={() => rideAction(r._id, 'status', { status: 'in_progress' })}>Start trip</button>}{user.role === 'driver' && r.status === 'in_progress' && <button className="primary small" onClick={() => rideAction(r._id, 'status', { status: 'completed' })}>Complete</button>}{user.role === 'passenger' && ['requested','accepted','arriving'].includes(r.status) && <button className="outline small" onClick={() => rideAction(r._id, 'status', { status: 'cancelled' })}>Cancel</button>}{['accepted','arriving','in_progress'].includes(r.status) && <button className="outline small" onClick={()=>shareTrip(r._id)}>Share trip</button>}{['accepted','arriving','in_progress'].includes(r.status) && <button className="sos-button small" onClick={()=>sendSOS(r._id)}>SOS</button>}{user.role === 'passenger' && r.status === 'completed' && !r.rating && <button className="outline small" onClick={() => { const rating = Number(prompt('Rate your ride from 1 to 5')); if (rating) rideAction(r._id, 'rating', { rating }); }}><Star size={14}/> Rate</button>}</div></div>)}</section>}
+      {view === 'rides' && user && <section className="panel rides-panel"><div className="section-title"><div><span className="eyebrow">YOUR ACTIVITY</span><h2>{user.role === 'driver' ? 'Available rides' : 'Your rides'}</h2></div><button className="outline" onClick={loadRides}>Refresh</button></div>{rides.length === 0 ? <p className="muted">No rides to show yet.</p> : rides.map(r => <div className="ride-row" key={r._id}><div className="ride-row-icon"><CarFront/></div><div className="ride-info"><b>{r.pickup.address} → {r.destination.address}</b><small>{r.status.replace('_', ' ')} · {r.category} · {money(r.finalFare ?? r.estimatedFare)}</small><small>Payment: {r.paymentStatus} ({r.paymentMethod}) · Coins earned: {r.coinsAwarded||0}</small>{user.role==='passenger'&&r.driver&&<div className="ride-vehicle-badge"><b>{r.driver.name}</b><div>{r.driver.vehicle?.make} {r.driver.vehicle?.model} · {r.driver.vehicle?.color||''}</div><strong>Plate: {r.driver.vehicle?.plateNumber||'Not supplied'}</strong></div>}{['requested','accepted','arriving','in_progress'].includes(r.status)&&<div className="trip-progress-card"><div className="trip-progress-head"><b>{r.status==='requested'?'Finding your driver':r.status==='accepted'?'Your driver is on the way':r.status==='arriving'?'Driver approaching pickup':`You are on your way`}</b><span>{r.status==='in_progress'?'ON TRIP':'LIVE UPDATE'}</span></div>{(()=>{const loc=String(liveDriverLocation?.rideId)===String(r._id)?liveDriverLocation:null;const p=tripProgress(r,loc);const remaining=r.status==='in_progress'?p.remainingKm:loc?distanceBetween(loc,r.pickup):null;return <><div className="trip-progress-track" role="progressbar" aria-label="Trip progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={p.percent}><span style={{width:`${p.percent}%`}}/></div><div className="trip-progress-meta"><b>{r.status==='in_progress'?`${p.percent}% complete`:r.status==='arriving'?'Driver approaching pickup':r.status==='accepted'?'Driver assigned':'Finding a driver'}</b>{r.status==='in_progress'&&<span>{remaining===null?'Waiting for live GPS':remaining<0.1?'Almost at destination':`${remaining.toFixed(1)} km remaining*`}</span>}{r.status==='arriving'&&<span>{remaining===null?'Waiting for driver GPS':remaining<0.1?'Driver is very close':`${remaining.toFixed(1)} km to pickup*`}</span>}</div></>})()}<div className="live-driver-summary"><span className="live-driver-avatar"><CarFront size={18}/></span><div><b>{r.driver?.name||'Driver details pending'}</b><small>{[r.driver?.vehicle?.color,r.driver?.vehicle?.make,r.driver?.vehicle?.model].filter(Boolean).join(' ')||'Vehicle details will appear when assigned'}</small><strong>Plate: {r.driver?.vehicle?.plateNumber||'Pending assignment'}</strong></div></div>{r.status==='in_progress'&&<small>*Distance is a straight-line GPS estimate; the actual road distance may differ.</small>}</div>}{['accepted','arriving','in_progress'].includes(r.status)&&r.driver&&<div className="ride-live-map"><RideMap pickup={r.pickup} destination={r.destination} liveDriverLocation={liveDriverLocation?.rideId===r._id?liveDriverLocation:null} center={liveDriverLocation?.rideId===r._id?liveDriverLocation:r.pickup} height={220}/><small>Live driver location updates while driver app is online and trip is active.</small></div>}</div><div className="ride-actions">{user.role === 'passenger' && r.paymentMethod === 'flutterwave' && r.paymentStatus !== 'paid' && <button className="outline small" onClick={() => pay(r._id)}>Pay online</button>}{user.role === 'driver' && r.status === 'accepted' && <button className="outline small" onClick={() => rideAction(r._id, 'status', { status: 'arriving' })}>Arriving</button>}{user.role === 'driver' && r.status === 'arriving' && <button className="outline small" onClick={() => rideAction(r._id, 'status', { status: 'in_progress' })}>Start trip</button>}{user.role === 'driver' && r.status === 'in_progress' && <button className="primary small" onClick={() => rideAction(r._id, 'status', { status: 'completed' })}>Complete</button>}{user.role === 'passenger' && ['requested','accepted','arriving'].includes(r.status) && <button className="outline small" onClick={() => setCancelRide(r)}>Cancel ride</button>}{['accepted','arriving','in_progress'].includes(r.status) && <button className="outline small" onClick={()=>shareTrip(r._id)}>Share trip</button>}{['accepted','arriving','in_progress'].includes(r.status) && <button className="sos-button small" onClick={()=>sendSOS(r._id)}>SOS</button>}{user.role === 'passenger' && r.status === 'completed' && !r.rating && <button className="outline small" onClick={() => { setRatingRide(r); setRatingValue(5); }}><Star size={14}/> Rate ride</button>}</div></div>)}</section>}
 
-      <section className="feature-strip"><div><ShieldCheck/><b>Safety first</b><span>Designed around safer journeys</span></div><div><Wallet/><b>Clear payments</b><span>Know your fare before you ride</span></div><div><Star/><b>Better every trip</b><span>Ratings help build trust</span></div></section>
+      {ratingRide && <div className="cr-dialog-backdrop" role="presentation" onMouseDown={e => { if (e.target === e.currentTarget && !busy) setRatingRide(null); }}><section className="cr-dialog" role="dialog" aria-modal="true" aria-labelledby="cr-rating-title"><button type="button" className="cr-dialog-close" aria-label="Close rating" onClick={() => setRatingRide(null)}>×</button><span className="eyebrow">YOUR FEEDBACK MATTERS</span><h2 id="cr-rating-title">How was your ride?</h2><p className="muted">Your feedback helps us build a safer, more reliable CivicRide experience.</p><form className="form-stack" onSubmit={submitRideRating}><div className="cr-rating-stars" role="radiogroup" aria-label="Rate your ride">{[1,2,3,4,5].map(n => <button key={n} type="button" role="radio" aria-checked={ratingValue===n} aria-label={`${n} star${n===1?'':'s'}`} className={n<=ratingValue?'is-active':''} onClick={() => setRatingValue(n)}><Star fill={n<=ratingValue?'currentColor':'none'} size={30}/></button>)}</div><p className="cr-rating-hint">Choose a rating from 1 to 5 stars.</p><button className="primary" disabled={busy}>{busy?'Submitting…':'Submit feedback'}</button></form></section></div>}
+      {cancelRide && <div className="cr-dialog-backdrop" role="presentation" onMouseDown={e => { if (e.target === e.currentTarget && !busy) setCancelRide(null); }}><section className="cr-dialog" role="alertdialog" aria-modal="true" aria-labelledby="cr-cancel-title"><button type="button" className="cr-dialog-close" aria-label="Close cancellation" onClick={() => setCancelRide(null)}>×</button><span className="eyebrow">RIDE CANCELLATION</span><h2 id="cr-cancel-title">Cancel this ride?</h2><p className="muted">Are you sure you want to cancel your trip? Your driver may already be on the way to your pickup point.</p><div className="cr-dialog-actions"><button type="button" className="outline" disabled={busy} onClick={() => setCancelRide(null)}>Keep ride</button><button type="button" className="danger-button" disabled={busy} onClick={confirmRideCancellation}>{busy?'Cancelling…':'Yes, cancel ride'}</button></div></section></div>}
+
+      <section className="feature-strip"><div><ShieldCheck/><b>Safety first</b><span>Designed around safer journeys</span></div><div><Wallet/><b>Clear payments</b><span>Know your fare before you ride</span></div><div><Star/><b>Better every trip</b><span>Ratings help build trust</span></div></section>
 
     </main>
 
@@ -672,7 +720,7 @@ async function rideAction(id, action, body = {}) {
     {user && <ContactCenter user={user} token={token} />}
     {user && <PushNotifications token={token} />}
 
-    <footer><a className="brand footer-brand" onClick={() => setView('home')}><span className="brand-icon"><Navigation size={18}/></span><span>Civic<span className="green">Ride</span></span></a><span>Ride smarter. Live better.</span><span>Development starter · Configure before production</span></footer>
+    <footer><a className="brand footer-brand" onClick={() => setView('home')}>{isPassengerExperience ? <img className="civicride-footer-logo" src="/civicride-logo.png" alt="CivicRide"/> : <><span className="brand-icon"><Navigation size={18}/></span><span>Civic<span className="green">Ride</span></span></>}</a><span>Ride smarter. Live better.</span><span>Development starter · Configure before production</span></footer>
     </div>
   );
 }
